@@ -2,264 +2,293 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Classic OP Website</title>
+<title>Temple Run – GitHub Edition</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ---------- GLOBAL ---------- */
-body {
-  margin: 0;
-  font-family: "Georgia", "Times New Roman", serif;
-  background: linear-gradient(135deg, #fdfcfb, #e2d1c3);
-  color: #2c2c2c;
-  scroll-behavior: smooth;
+:root{
+  --glow: gold;
+  --trail: rgba(255,215,0,.5);
 }
 
-.dark {
-  background: linear-gradient(135deg, #1c1c1c, #2b2b2b);
-  color: #f5f5f5;
+html,body{
+  margin:0;
+  overflow:hidden;
+  background:#000;
+  font-family:Segoe UI,Arial;
 }
 
-section {
-  padding: 60px 10%;
+/* SCENE */
+#scene{
+  width:100vw;
+  height:100vh;
+  perspective:1400px;
+  background:
+    radial-gradient(circle at top,#134e4a,#020b06),
+    linear-gradient(#000,#020b06);
+  transition:transform .1s;
 }
 
-h1, h2 {
-  text-align: center;
-  letter-spacing: 2px;
+/* BACKGROUND FX */
+#bg{
+  position:absolute;
+  inset:-40%;
+  background:
+    radial-gradient(circle,rgba(255,255,255,.08) 2%,transparent 3%);
+  animation:move 40s linear infinite;
+}
+@keyframes move{
+  to{background-position:-2000px 0}
 }
 
-/* ---------- NAVBAR ---------- */
-nav {
-  position: sticky;
-  top: 0;
-  background: #3a3a3a;
-  padding: 15px;
-  display: flex;
-  justify-content: space-around;
-  z-index: 999;
+/* ROAD */
+#road{
+  position:absolute;
+  width:320%;
+  height:220%;
+  left:50%;
+  bottom:-55%;
+  background:linear-gradient(#3b2a14,#120a05);
+  transform:translateX(-50%) rotateX(72deg);
 }
 
-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
+/* PLAYER */
+#player{
+  position:absolute;
+  bottom:120px;
+  left:50%;
+  width:46px;
+  height:70px;
+  border-radius:14px;
+  transform:translateX(-50%);
+  box-shadow:0 0 40px var(--glow);
+  transition:left .18s;
 }
 
-nav a:hover {
-  text-decoration: underline;
+/* TRAIL */
+#trail{
+  position:absolute;
+  width:70px;
+  height:140px;
+  background:radial-gradient(circle,var(--trail),transparent);
+  filter:blur(22px);
+  pointer-events:none;
 }
 
-/* ---------- HERO ---------- */
-.hero {
-  text-align: center;
-  padding: 120px 10%;
+/* BOSS */
+#boss{
+  position:absolute;
+  bottom:-220px;
+  left:50%;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,#700,#000);
+  box-shadow:0 0 160px red;
+  transform:translateX(-50%);
 }
 
-.hero h1 {
-  font-size: 3rem;
+/* SPEED */
+#speedLines{
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.1) 2px,
+    transparent 4px
+  );
+  opacity:0;
+  pointer-events:none;
 }
 
-.hero p {
-  font-size: 1.2rem;
+/* HUD */
+#hud{
+  position:absolute;
+  top:12px;
+  left:12px;
+  color:white;
+  font-size:16px;
+  text-shadow:0 0 15px black;
 }
 
-/* ---------- BUTTON ---------- */
-.btn {
-  padding: 10px 20px;
-  background: #333;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin: 10px;
+/* OVERLAYS */
+.overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  background:radial-gradient(circle,#1b5e20,#020b06);
 }
 
-.btn:hover {
-  background: #555;
+button{
+  padding:18px 60px;
+  font-size:24px;
+  border:none;
+  border-radius:60px;
+  background:linear-gradient(45deg,#ff512f,#f09819);
+  color:white;
+  box-shadow:0 0 50px orange;
 }
+button:active{transform:scale(.95)}
 
-/* ---------- GALLERY ---------- */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 15px;
+/* CHARACTER GRID */
+#chars{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
 }
-
-.gallery img {
-  width: 100%;
-  cursor: pointer;
-  border-radius: 10px;
+.char{
+  width:90px;height:120px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 0 30px rgba(255,255,255,.3);
 }
-
-/* ---------- MODAL ---------- */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  justify-content: center;
-  align-items: center;
-}
-
-.modal img {
-  max-width: 90%;
-  max-height: 90%;
-}
-
-/* ---------- TODO ---------- */
-.todo input {
-  padding: 8px;
-  width: 70%;
-}
-
-.todo ul {
-  list-style: none;
-  padding: 0;
-}
-
-.todo li {
-  background: #ddd;
-  margin: 5px 0;
-  padding: 8px;
-  cursor: pointer;
-}
-
-/* ---------- FOOTER ---------- */
-footer {
-  background: #222;
-  color: #ccc;
-  text-align: center;
-  padding: 20px;
-}
+.char:hover{transform:scale(1.1)}
 </style>
 </head>
 
 <body>
 
-<nav>
-  <a href="#home">Home</a>
-  <a href="#features">Features</a>
-  <a href="#gallery">Gallery</a>
-  <a href="#tools">Tools</a>
-  <a href="#contact">Contact</a>
-</nav>
+<div id="scene">
+  <div id="bg"></div>
+  <div id="road"></div>
+  <div id="boss"></div>
+  <div id="trail"></div>
+  <div id="player"></div>
+  <div id="speedLines"></div>
 
-<!-- HERO -->
-<section id="home" class="hero">
-  <h1>Classic OP Website</h1>
-  <p>Old-school design. Modern power.</p>
-  <button class="btn" onclick="toggleTheme()">Toggle Dark Mode</button>
-  <h3 id="clock"></h3>
-</section>
-
-<!-- FEATURES -->
-<section id="features">
-  <h2>Features</h2>
-  <ul>
-    <li>🎵 Music Player</li>
-    <li>📝 Notes App</li>
-    <li>📋 Todo List</li>
-    <li>🖼 Image Viewer</li>
-    <li>⏰ Live Clock</li>
-  </ul>
-
-  <audio controls>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-  </audio>
-</section>
-
-<!-- GALLERY -->
-<section id="gallery">
-  <h2>Gallery</h2>
-  <div class="gallery">
-    <img src="https://picsum.photos/300/200?1" onclick="openModal(this.src)">
-    <img src="https://picsum.photos/300/200?2" onclick="openModal(this.src)">
-    <img src="https://picsum.photos/300/200?3" onclick="openModal(this.src)">
+  <div id="hud">
+    Score: <span id="score">0</span><br>
+    Speed: <span id="spd">10</span><br>
+    Character: <span id="cname"></span>
   </div>
-</section>
-
-<div class="modal" id="modal" onclick="closeModal()">
-  <img id="modalImg">
 </div>
 
-<!-- TOOLS -->
-<section id="tools">
-  <h2>Todo List</h2>
-  <div class="todo">
-    <input id="taskInput" placeholder="New task">
-    <button class="btn" onclick="addTask()">Add</button>
-    <ul id="taskList"></ul>
+<!-- START -->
+<div id="start" class="overlay">
+  <h1>TEMPLE RUN</h1>
+  <p>GitHub Pages Edition</p>
+
+  <div id="chars">
+    <div class="char" style="background:gold" onclick="pick('Runner')">Runner</div>
+    <div class="char" style="background:#4fc3f7" onclick="pick('Ninja')">Ninja</div>
+    <div class="char" style="background:#e53935" onclick="pick('Warrior')">Warrior</div>
+    <div class="char" style="background:#2e7d32" onclick="pick('Shadow')">Shadow</div>
   </div>
 
-  <h2>Notes</h2>
-  <textarea id="notes" rows="6" style="width:100%"></textarea>
-  <button class="btn" onclick="saveNotes()">Save Notes</button>
-</section>
+  <br>
+  <button onclick="startGame()">START RUN</button>
+</div>
 
-<!-- CONTACT -->
-<section id="contact">
-  <h2>Contact</h2>
-  <input id="name" placeholder="Name"><br><br>
-  <input id="email" placeholder="Email"><br><br>
-  <button class="btn" onclick="submitForm()">Submit</button>
-</section>
-
-<footer>
-  © <span id="year"></span> Classic Website
-</footer>
+<!-- GAME OVER -->
+<div id="over" class="overlay" style="display:none">
+  <h1>GAME OVER</h1>
+  <p id="finalScore"></p>
+  <button onclick="location.reload()">RESTART</button>
+</div>
 
 <script>
-/* ---------- CLOCK ---------- */
-setInterval(() => {
-  document.getElementById("clock").innerText =
-    new Date().toLocaleTimeString();
-}, 1000);
+let lane=2,jumping=false,score=0,speed=10,chase=420;
+let running=false,character=null,jumpBoost=1,bossSlow=1,invincible=false;
 
-/* ---------- THEME ---------- */
-function toggleTheme() {
-  document.body.classList.toggle("dark");
+const player=document.getElementById("player");
+const trail=document.getElementById("trail");
+const boss=document.getElementById("boss");
+const scene=document.getElementById("scene");
+const speedLines=document.getElementById("speedLines");
+
+function pick(c){
+  character=c;
+  document.getElementById("cname").innerText=c;
+
+  if(c==="Runner"){setChar("gold","rgba(255,215,0,.5)",1,1);}
+  if(c==="Ninja"){setChar("#4fc3f7","rgba(79,195,247,.5)",1.4,1);}
+  if(c==="Warrior"){setChar("#e53935","rgba(229,57,53,.5)",1,0.7);}
+  if(c==="Shadow"){
+    setChar("#2e7d32","rgba(50,255,50,.5)",1,1);
+    invincible=true;
+    setTimeout(()=>invincible=false,5000);
+  }
 }
 
-/* ---------- MODAL ---------- */
-function openModal(src) {
-  document.getElementById("modal").style.display = "flex";
-  document.getElementById("modalImg").src = src;
+function setChar(color,trailC,jump,bslow){
+  player.style.background=color;
+  document.documentElement.style.setProperty("--glow",color);
+  document.documentElement.style.setProperty("--trail",trailC);
+  jumpBoost=jump;bossSlow=bslow;
 }
 
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
+function startGame(){
+  if(!character) return alert("Choose a character!");
+  document.getElementById("start").style.display="none";
+  running=true;
+  loop();
 }
 
-/* ---------- TODO ---------- */
-function addTask() {
-  let input = document.getElementById("taskInput");
-  if (!input.value) return;
+document.addEventListener("keydown",e=>{
+  if(!running) return;
+  if(e.key==="ArrowLeft"&&lane>1){lane--;updateLane();}
+  if(e.key==="ArrowRight"&&lane<3){lane++;updateLane();}
+  if((e.key==="ArrowUp"||e.key===" ")&&!jumping) jump();
+});
+document.addEventListener("touchstart",()=>!jumping&&jump());
 
-  let li = document.createElement("li");
-  li.innerText = input.value;
-  li.onclick = () => li.remove();
-  document.getElementById("taskList").appendChild(li);
-
-  input.value = "";
+function updateLane(){
+  player.style.left=["38%","50%","62%"][lane-1];
 }
 
-/* ---------- NOTES ---------- */
-function saveNotes() {
-  localStorage.setItem("notes", document.getElementById("notes").value);
-  alert("Notes Saved!");
+function jump(){
+  jumping=true;
+  let h=0,max=150*jumpBoost;
+  let up=setInterval(()=>{
+    h+=12;player.style.bottom=120+h+"px";
+    if(h>=max){
+      clearInterval(up);
+      let down=setInterval(()=>{
+        h-=12;player.style.bottom=120+h+"px";
+        if(h<=0){clearInterval(down);jumping=false;}
+      },20);
+    }
+  },20);
 }
 
-document.getElementById("notes").value =
-  localStorage.getItem("notes") || "";
-
-/* ---------- FORM ---------- */
-function submitForm() {
-  alert("Form submitted (demo)");
+function gameOver(){
+  running=false;
+  document.getElementById("over").style.display="flex";
+  document.getElementById("finalScore").innerText="Score: "+score;
 }
 
-/* ---------- YEAR ---------- */
-document.getElementById("year").innerText =
-  new Date().getFullYear();
+function loop(){
+  setInterval(()=>{
+    if(!running) return;
+
+    score++;
+    speed+=0.02;
+    chase-=0.4*bossSlow;
+
+    document.getElementById("score").innerText=score;
+    document.getElementById("spd").innerText=speed.toFixed(1);
+
+    boss.style.bottom=(-220+(420-chase))+"px";
+    trail.style.left=player.style.left;
+    trail.style.bottom="110px";
+
+    speedLines.style.opacity=Math.min((speed-10)/10,.6);
+    scene.style.transform=`scale(${1+speed/120})`;
+
+    if(chase<80) scene.style.transform+=` rotate(${Math.sin(score)*.4}deg)`;
+
+    if(chase<=0 && !invincible) gameOver();
+  },50);
+}
 </script>
 
 </body>
