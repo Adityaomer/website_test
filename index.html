@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Classic OP Website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ---------- GLOBAL ---------- */
+body {
+  margin: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+  background: linear-gradient(135deg, #fdfcfb, #e2d1c3);
+  color: #2c2c2c;
+  scroll-behavior: smooth;
+}
+
+.dark {
+  background: linear-gradient(135deg, #1c1c1c, #2b2b2b);
+  color: #f5f5f5;
+}
+
+section {
+  padding: 60px 10%;
+}
+
+h1, h2 {
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* ---------- NAVBAR ---------- */
+nav {
+  position: sticky;
+  top: 0;
+  background: #3a3a3a;
+  padding: 15px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 999;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  text-align: center;
+  padding: 120px 10%;
+}
+
+.hero h1 {
+  font-size: 3rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+}
+
+/* ---------- BUTTON ---------- */
+.btn {
+  padding: 10px 20px;
+  background: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.btn:hover {
+  background: #555;
+}
+
+/* ---------- GALLERY ---------- */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 15px;
+}
+
+.gallery img {
+  width: 100%;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+/* ---------- MODAL ---------- */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal img {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+/* ---------- TODO ---------- */
+.todo input {
+  padding: 8px;
+  width: 70%;
+}
+
+.todo ul {
+  list-style: none;
+  padding: 0;
+}
+
+.todo li {
+  background: #ddd;
+  margin: 5px 0;
+  padding: 8px;
+  cursor: pointer;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  background: #222;
+  color: #ccc;
+  text-align: center;
+  padding: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#features">Features</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#tools">Tools</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <h1>Classic OP Website</h1>
+  <p>Old-school design. Modern power.</p>
+  <button class="btn" onclick="toggleTheme()">Toggle Dark Mode</button>
+  <h3 id="clock"></h3>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <h2>Features</h2>
+  <ul>
+    <li>🎵 Music Player</li>
+    <li>📝 Notes App</li>
+    <li>📋 Todo List</li>
+    <li>🖼 Image Viewer</li>
+    <li>⏰ Live Clock</li>
+  </ul>
+
+  <audio controls>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+  </audio>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <h2>Gallery</h2>
+  <div class="gallery">
+    <img src="https://picsum.photos/300/200?1" onclick="openModal(this.src)">
+    <img src="https://picsum.photos/300/200?2" onclick="openModal(this.src)">
+    <img src="https://picsum.photos/300/200?3" onclick="openModal(this.src)">
+  </div>
+</section>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <img id="modalImg">
+</div>
+
+<!-- TOOLS -->
+<section id="tools">
+  <h2>Todo List</h2>
+  <div class="todo">
+    <input id="taskInput" placeholder="New task">
+    <button class="btn" onclick="addTask()">Add</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  <h2>Notes</h2>
+  <textarea id="notes" rows="6" style="width:100%"></textarea>
+  <button class="btn" onclick="saveNotes()">Save Notes</button>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2>Contact</h2>
+  <input id="name" placeholder="Name"><br><br>
+  <input id="email" placeholder="Email"><br><br>
+  <button class="btn" onclick="submitForm()">Submit</button>
+</section>
+
+<footer>
+  © <span id="year"></span> Classic Website
+</footer>
+
+<script>
+/* ---------- CLOCK ---------- */
+setInterval(() => {
+  document.getElementById("clock").innerText =
+    new Date().toLocaleTimeString();
+}, 1000);
+
+/* ---------- THEME ---------- */
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
+
+/* ---------- MODAL ---------- */
+function openModal(src) {
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modalImg").src = src;
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+/* ---------- TODO ---------- */
+function addTask() {
+  let input = document.getElementById("taskInput");
+  if (!input.value) return;
+
+  let li = document.createElement("li");
+  li.innerText = input.value;
+  li.onclick = () => li.remove();
+  document.getElementById("taskList").appendChild(li);
+
+  input.value = "";
+}
+
+/* ---------- NOTES ---------- */
+function saveNotes() {
+  localStorage.setItem("notes", document.getElementById("notes").value);
+  alert("Notes Saved!");
+}
+
+document.getElementById("notes").value =
+  localStorage.getItem("notes") || "";
+
+/* ---------- FORM ---------- */
+function submitForm() {
+  alert("Form submitted (demo)");
+}
+
+/* ---------- YEAR ---------- */
+document.getElementById("year").innerText =
+  new Date().getFullYear();
+</script>
+
+</body>
+</html>
