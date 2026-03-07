@@ -2,7 +2,7 @@ user:
   name: "Adityaomer"
   github: "website_test"
 
-runtime: 
+runtime:
   image: "python:3.11-slim"
 
 commands:
@@ -14,7 +14,3 @@ commands:
 repository:
   branch: "main"
   auto_deploy: true
-
-env:
-  - ENVIRONMENT:production
-
