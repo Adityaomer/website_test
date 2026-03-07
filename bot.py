@@ -58,6 +58,17 @@ async def add_category(event):
     await event.respond("Please send me the category name.")
     user_data[event.chat_id] = {"step": "name"}
 
+@client.on(events.NewMessage(pattern='/delete_all'))
+async def delete_all(event):
+    # Update the document with _id: 0 to set its content to an empty object
+    result = collection.update_one({"_id": 0}, {"$set": {"category": []}})
+
+    if result.modified_count > 0:
+        response_message = "All categories have been deleted successfully."
+    else:
+        response_message = "No categories found to delete or an error occurred."
+
+    await event.respond(response_message)
 
 @client.on(events.NewMessage(pattern='/delete'))
 async def delete_category(event):
@@ -75,20 +86,6 @@ async def delete_category(event):
     except (IndexError, ValueError):
         await event.respond("Please provide a valid index after /delete command.")
 
-# ... [previous code remains unchanged] ...
-
-@client.on(events.NewMessage(pattern='/delete_all'))
-async def delete_all(event):
-    # Update the document with _id: 0 to set its content to an empty object
-    result = collection.update_one({"_id": 0}, {"$set": {"category": []}})
-
-    if result.modified_count > 0:
-        response_message = "All categories have been deleted successfully."
-    else:
-        response_message = "No categories found to delete or an error occurred."
-
-    await event.respond(response_message)
-# ... [previous code remains unchanged] ...
 
 @client.on(events.NewMessage(pattern='/getdata'))
 async def get_data(event):
