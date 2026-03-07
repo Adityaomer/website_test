@@ -92,10 +92,10 @@ async def get_data(event):
     # Retrieve all categories from the MongoDB collection
     category_data = collection.find_one({}, {"_id": 0})
     try:
-      await event.respond(category_data)
+      await event.respond(str(category_data))
     except:
       try:
-          await event.respond(category_data["category"]) 
+          await event.respond(str(category_data["category"])) 
       except:
           await event.reply("error") 
     if category_data and "category" in category_data:
