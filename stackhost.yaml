@@ -10,7 +10,7 @@ commands:
   package:"inxi"
   build:
     - "pip install -r requirements.txt"
-  start: "python3 web.py"
+  start: "python3 bot.py"
 
 repository:
   branch: "main"
