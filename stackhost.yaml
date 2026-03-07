@@ -2,7 +2,7 @@ user:
   name: "Adityaomer"
   github: "website_test"
 
-runtime: python
+runtime: 
   image: "python:3.11-slim"
 
 commands:
