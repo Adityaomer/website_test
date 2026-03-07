@@ -2,8 +2,7 @@ user:
   name: "Adityaomer"
   github: "website_test"
 
-runtime: 
-  runtimes: python
+runtime:python
   image: "python:3.11-slim"
 
 commands:
@@ -18,3 +17,8 @@ repository:
 
 env:
   - ENVIRONMENT:production
+
+user:
+  name: string
+  github: string
+
