@@ -137,7 +137,7 @@ async def receive_product_image(event):
 
             # Clean up user data for this chat
             user_data[event.chat_id] = {"step": "product_name", "category_index": index+1}
-        
+            return
 
 @client.on(events.NewMessage())
 async def receive_product_name(event):
