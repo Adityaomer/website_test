@@ -91,7 +91,7 @@ async def delete_category(event):
 async def get_data(event):
     # Retrieve all categories from the MongoDB collection
     category_data = collection.find_one({}, {"_id": 0})
-
+    event.respond(category_data)
     if category_data and "category" in category_data:
         categories = category_data["category"]
         if categories:
