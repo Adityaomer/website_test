@@ -18,7 +18,3 @@ repository:
 env:
   - ENVIRONMENT:production
 
-user:
-  name: string
-  github: string
-
