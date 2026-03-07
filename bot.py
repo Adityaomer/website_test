@@ -136,9 +136,8 @@ async def receive_product_image(event):
             await event.respond(f"Product '{product['name']}' added to category '{category_data['category'][index]['name']}' successfully!")
 
             # Clean up user data for this chat
-            del user_data[event.chat_id]
-        else:
-            await event.respond("Please send a valid product image URL.")
+            user_data[event.chat_id] = {"step": "product_name", "category_index": index+1}
+        
 
 @client.on(events.NewMessage())
 async def receive_product_name(event):
