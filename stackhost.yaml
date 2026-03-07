@@ -6,7 +6,7 @@ runtime: python
   image: "python:3.11-slim"
 
 commands:
-  package:"inxi"
+  package: "inxi"
   build:
     - "pip install -r requirements.txt"
   start: "python3 bot.py"
