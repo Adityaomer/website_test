@@ -53,7 +53,7 @@ async def receive_name(event):
         await event.respond("Now send me the image URL.")
         user_data[event.chat_id]["step"] = "image"
 
-@client.on(events.NewMessage(pattern='/add'))
+@client.on(events.NewMessage(pattern='/addcat'))
 async def add_category(event):
     await event.respond("Please send me the category name.")
     user_data[event.chat_id] = {"step": "name"}
@@ -110,6 +110,62 @@ async def get_data(event):
         response_message = "No categories found."
 
     await event.respond(response_message)
+
+
+@client.on(events.NewMessage())
+async def receive_product_image(event):
+    if event.chat_id in user_data:
+        if user_data[event.chat_id]["step"] == "product_image":
+            user_data[event.chat_id]["product_image"] = event.message.message
+            
+            # Get the index of the category
+            index = user_data[event.chat_id]["category_index"]
+            category_data = collection.find_one({}, {"_id": 0})
+
+            # Add product to the specified category
+            product = {
+                "name": user_data[event.chat_id]["product_name"],
+                "image": user_data[event.chat_id]["product_image"]
+            }
+
+            collection.update_one(
+                {},
+                {"$push": {f"category.{index}.products": product}}
+            )
+
+            await event.respond(f"Product '{product['name']}' added to category '{category_data['category'][index]['name']}' successfully!")
+
+            # Clean up user data for this chat
+            del user_data[event.chat_id]
+        else:
+            await event.respond("Please send a valid product image URL.")
+
+@client.on(events.NewMessage())
+async def receive_product_name(event):
+    if event.chat_id in user_data:
+        if user_data[event.chat_id]["step"] == "product_name":
+            if event.message.message == "/stoppro":
+                await event.respond("Product addition stopped.")
+                del user_data[event.chat_id]
+                return
+
+            user_data[event.chat_id]["product_name"] = event.message.message
+            await event.respond("Now send me the image URL for this product.")
+            user_data[event.chat_id]["step"] = "product_image"
+
+@client.on(events.NewMessage(pattern='/addpro'))
+async def add_product(event):
+    try:
+        index = int(event.message.message.split()[1])  # Get the index from the command
+        category_data = collection.find_one({}, {"_id": 0})
+
+        if category_data and 0 <= index < len(category_data.get("category", [])):
+            await event.respond(f"Adding products to category '{category_data['category'][index]['name']}'. Send product name or /stoppro to finish.")
+            user_data[event.chat_id] = {"step": "product_name", "category_index": index}
+        else:
+            await event.respond("Invalid index provided.")
+    except (IndexError, ValueError):
+        await event.respond("Please provide a valid index after /addpro command.")
 
 if __name__ == "__main__":
     client.run_until_disconnected()
