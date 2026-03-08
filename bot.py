@@ -112,39 +112,56 @@ async def get_data(event):
     await event.respond(response_message)
 
 
+
+
+
+
+@client.on(events.NewMessage())
+async def receive_product_rate(event):
+    if event.chat_id in user_data:
+        if user_data[event.chat_id]["step"] == "product_rate":
+            try:
+       
+                user_data[event.chat_id]["product_rate"] = str(rate) 
+
+                # Get the index of the category
+                index = user_data[event.chat_id]["category_index"]
+                category_data = collection.find_one({}, {"_id": 0})
+
+                # Add product to the specified category
+                product = {
+                    "name": user_data[event.chat_id]["product_name"],
+                    "image": user_data[event.chat_id]["product_image"],
+                    "rate": user_data[event.chat_id]["product_rate"]
+                }
+
+                collection.update_one(
+                    {},
+                    {"$push": {f"category.{index}.products": product}}
+                )
+
+                await event.respond(f"Product '{product['name']}' added to category '{category_data['category'][index]['name']}' with rate {product['rate']} successfully!")
+                await event.respond(f"Send Name of Next Product or send /stoppro to stop") 
+
+                
+                user_data[event.chat_id]["step"] = "product_name_2"
+
+            except ValueError:
+                await event.respond("Please send a valid number for the product rate.")
+
 @client.on(events.NewMessage())
 async def receive_product_image(event):
     if event.chat_id in user_data:
         if user_data[event.chat_id]["step"] == "product_image":
             user_data[event.chat_id]["product_image"] = event.message.message
             
-            # Get the index of the category
-            index = user_data[event.chat_id]["category_index"]
-            category_data = collection.find_one({}, {"_id": 0})
-
-            # Add product to the specified category
-            product = {
-                "name": user_data[event.chat_id]["product_name"],
-                "image": user_data[event.chat_id]["product_image"]
-            }
-
-            collection.update_one(
-                {},
-                {"$push": {f"category.{index}.products": product}}
-            )
-
-            await event.respond(f"Product '{product['name']}' added to category '{category_data['category'][index]['name']}' successfully!")
-
-            # Clean up user data for this chat
-            user_data[event.chat_id]["step"] = "product_name_2"
-            return
+            # Prompt for product rate
+            await event.respond("Now send me the product rate.")
+            user_data[event.chat_id]["step"] = "product_rate"
 
 @client.on(events.NewMessage())
 async def receive_product_name(event):
     if event.chat_id in user_data:
-        if user_data[event.chat_id]["step"] == "product_name_2":
-            user_data[event.chat_id]["step"] = "product_name"
-            return
         if user_data[event.chat_id]["step"] == "product_name":
             if event.message.message == "/stoppro":
                 await event.respond("Product addition stopped.")
@@ -154,6 +171,7 @@ async def receive_product_name(event):
             user_data[event.chat_id]["product_name"] = event.message.message
             await event.respond("Now send me the image URL for this product.")
             user_data[event.chat_id]["step"] = "product_image"
+
 
 @client.on(events.NewMessage(pattern='/addpro'))
 async def add_product(event):
