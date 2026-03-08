@@ -132,7 +132,8 @@ async def receive_product_rate(event):
                 product = {
                     "name": user_data[event.chat_id]["product_name"],
                     "image": user_data[event.chat_id]["product_image"],
-                    "rate": user_data[event.chat_id]["product_rate"]
+                    "rate": user_data[event.chat_id]["product_rate"], 
+                    "sub_products":[]
                 }
 
                 collection.update_one(
