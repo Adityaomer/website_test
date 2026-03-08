@@ -162,6 +162,9 @@ async def receive_product_image(event):
 @client.on(events.NewMessage())
 async def receive_product_name(event):
     if event.chat_id in user_data:
+        if user_data[event.chat_id]["step"] == "product_name_2":
+            user_data[event.chat_id]["step"] = "product_name"
+            return
         if user_data[event.chat_id]["step"] == "product_name":
             if event.message.message == "/stoppro":
                 await event.respond("Product addition stopped.")
