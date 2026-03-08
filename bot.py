@@ -122,8 +122,7 @@ async def receive_product_rate(event):
         if user_data[event.chat_id]["step"] == "product_rate":
             try:
        
-                user_data[event.chat_id]["product_rate"] = str(rate) 
-
+                user_data[event.chat_id]["product_rate"] = event.message.message
                 # Get the index of the category
                 index = user_data[event.chat_id]["category_index"]
                 category_data = collection.find_one({}, {"_id": 0})
