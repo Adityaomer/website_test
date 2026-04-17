@@ -9,7 +9,7 @@ commands:
   package: ""
   build:
     - "pip install -r requirements.txt"
-  start: "python3 bot.py"
+  start: "python3 bit.py"
 
 repository:
   branch: "main"
