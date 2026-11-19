@@ -64,7 +64,8 @@ function openProject(i) {
     current = (i + projects.length) % projects.length;
     const p = projects[current];
     const sections = (p.details || []).map(d =>
-        `<div class="d-sec"><h4>${esc(d.heading)}</h4><p>${esc(d.text)}</p></div>`).join("");
+        `<div class="d-sec"><div class="d-pic">${artHtml({ image: d.image, glyph: p.glyph })}</div>
+         <h4>${esc(d.heading)}</h4><p>${esc(d.text)}</p></div>`).join("");
     $("#detail-body").innerHTML = `<div class="d-wrap" style="${accentStyle(p)}">
         <div class="d-banner">${artHtml(p)}<div class="d-title"><div class="d-tag">${esc((p.tag || "").toUpperCase())}</div><h2>${esc(p.name)}</h2></div></div>
         <p class="d-sub">${esc(p.summary || "")}</p>
