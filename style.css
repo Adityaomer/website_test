@@ -91,6 +91,8 @@ main{position:relative;z-index:2;width:min(1240px,92%);margin:0 auto;padding:70p
 .d-title h2{margin:10px 0 0;font-family:Georgia,serif;font-weight:500;font-size:clamp(40px,5vw,66px);letter-spacing:-1.5px;line-height:1.05}
 .d-sections{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
 .d-sec{padding:28px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015))}
+.d-pic{position:relative;height:170px;border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid rgba(255,255,255,.08)}
+.d-pic .art .glyph{font-size:130px;right:10px;top:0}
 .d-sec h4{margin:0 0 10px;font-size:11px;font-weight:800;letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
 .d-sec p{margin:0;font-size:15.5px;line-height:1.75;color:rgba(244,241,234,.8)}
 .d-sub{margin:0 0 30px;font-size:18px;color:var(--muted)}
