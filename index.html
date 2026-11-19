@@ -2,294 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Temple Run – GitHub Edition</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-:root{
-  --glow: gold;
-  --trail: rgba(255,215,0,.5);
-}
-
-html,body{
-  margin:0;
-  overflow:hidden;
-  background:#000;
-  font-family:Segoe UI,Arial;
-}
-
-/* SCENE */
-#scene{
-  width:100vw;
-  height:100vh;
-  perspective:1400px;
-  background:
-    radial-gradient(circle at top,#134e4a,#020b06),
-    linear-gradient(#000,#020b06);
-  transition:transform .1s;
-}
-
-/* BACKGROUND FX */
-#bg{
-  position:absolute;
-  inset:-40%;
-  background:
-    radial-gradient(circle,rgba(255,255,255,.08) 2%,transparent 3%);
-  animation:move 40s linear infinite;
-}
-@keyframes move{
-  to{background-position:-2000px 0}
-}
-
-/* ROAD */
-#road{
-  position:absolute;
-  width:320%;
-  height:220%;
-  left:50%;
-  bottom:-55%;
-  background:linear-gradient(#3b2a14,#120a05);
-  transform:translateX(-50%) rotateX(72deg);
-}
-
-/* PLAYER */
-#player{
-  position:absolute;
-  bottom:120px;
-  left:50%;
-  width:46px;
-  height:70px;
-  border-radius:14px;
-  transform:translateX(-50%);
-  box-shadow:0 0 40px var(--glow);
-  transition:left .18s;
-}
-
-/* TRAIL */
-#trail{
-  position:absolute;
-  width:70px;
-  height:140px;
-  background:radial-gradient(circle,var(--trail),transparent);
-  filter:blur(22px);
-  pointer-events:none;
-}
-
-/* BOSS */
-#boss{
-  position:absolute;
-  bottom:-220px;
-  left:50%;
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  background:radial-gradient(circle,#700,#000);
-  box-shadow:0 0 160px red;
-  transform:translateX(-50%);
-}
-
-/* SPEED */
-#speedLines{
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,.1) 2px,
-    transparent 4px
-  );
-  opacity:0;
-  pointer-events:none;
-}
-
-/* HUD */
-#hud{
-  position:absolute;
-  top:12px;
-  left:12px;
-  color:white;
-  font-size:16px;
-  text-shadow:0 0 15px black;
-}
-
-/* OVERLAYS */
-.overlay{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  background:radial-gradient(circle,#1b5e20,#020b06);
-}
-
-button{
-  padding:18px 60px;
-  font-size:24px;
-  border:none;
-  border-radius:60px;
-  background:linear-gradient(45deg,#ff512f,#f09819);
-  color:white;
-  box-shadow:0 0 50px orange;
-}
-button:active{transform:scale(.95)}
-
-/* CHARACTER GRID */
-#chars{
-  display:flex;
-  gap:20px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-.char{
-  width:90px;height:120px;
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  box-shadow:0 0 30px rgba(255,255,255,.3);
-}
-.char:hover{transform:scale(1.1)}
-</style>
+<title>Exhibition Projects</title>
+<link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
 
-<div id="scene">
-  <div id="bg"></div>
-  <div id="road"></div>
-  <div id="boss"></div>
-  <div id="trail"></div>
-  <div id="player"></div>
-  <div id="speedLines"></div>
+<div class="bg" aria-hidden="true">
+  <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+  <span class="grid"></span><span class="grain"></span>
+</div>
 
-  <div id="hud">
-    Score: <span id="score">0</span><br>
-    Speed: <span id="spd">10</span><br>
-    Character: <span id="cname"></span>
+<div id="intro" class="intro">
+  <div class="intro-inner">
+    <div class="intro-small">WELCOME TO THE</div>
+    <div class="intro-title">Exhibition</div>
+    <div class="intro-line"></div>
+    <div class="intro-sub">SCIENCE &amp; INNOVATION SHOWCASE</div>
   </div>
 </div>
 
-<!-- START -->
-<div id="start" class="overlay">
-  <h1>TEMPLE RUN</h1>
-  <p>GitHub Pages Edition</p>
+<main id="home">
+  <header class="hero">
+    <div class="eyebrow" id="eyebrow">SCHOOL SCIENCE EXHIBITION</div>
+    <h1 id="title">Exhibition Projects</h1>
+    <p id="subtitle">Ideas that move, sense, and amaze.</p>
+    <div class="hero-rule"><span></span><i>&#10022;</i><span></span></div>
+  </header>
 
-  <div id="chars">
-    <div class="char" style="background:gold" onclick="pick('Runner')">Runner</div>
-    <div class="char" style="background:#4fc3f7" onclick="pick('Ninja')">Ninja</div>
-    <div class="char" style="background:#e53935" onclick="pick('Warrior')">Warrior</div>
-    <div class="char" style="background:#2e7d32" onclick="pick('Shadow')">Shadow</div>
+  <section class="list-head"><span>OUR PROJECTS</span><span class="line"></span><span id="count"></span></section>
+  <section class="cards" id="cards"></section>
+  <footer class="foot">Click any project to explore</footer>
+</main>
+
+<section id="detail" class="detail" aria-hidden="true">
+  <div class="detail-bar">
+    <button class="back" id="back">&larr; Back to projects</button>
+    <div class="detail-nav">
+      <button id="prev" aria-label="Previous project">&lsaquo;</button>
+      <button id="next" aria-label="Next project">&rsaquo;</button>
+    </div>
   </div>
+  <div class="detail-scroll" id="detail-body"></div>
+</section>
 
-  <br>
-  <button onclick="startGame()">START RUN</button>
-</div>
-
-<!-- GAME OVER -->
-<div id="over" class="overlay" style="display:none">
-  <h1>GAME OVER</h1>
-  <p id="finalScore"></p>
-  <button onclick="location.reload()">RESTART</button>
-</div>
-
-<script>
-let lane=2,jumping=false,score=0,speed=10,chase=420;
-let running=false,character=null,jumpBoost=1,bossSlow=1,invincible=false;
-
-const player=document.getElementById("player");
-const trail=document.getElementById("trail");
-const boss=document.getElementById("boss");
-const scene=document.getElementById("scene");
-const speedLines=document.getElementById("speedLines");
-
-function pick(c){
-  character=c;
-  document.getElementById("cname").innerText=c;
-
-  if(c==="Runner"){setChar("gold","rgba(255,215,0,.5)",1,1);}
-  if(c==="Ninja"){setChar("#4fc3f7","rgba(79,195,247,.5)",1.4,1);}
-  if(c==="Warrior"){setChar("#e53935","rgba(229,57,53,.5)",1,0.7);}
-  if(c==="Shadow"){
-    setChar("#2e7d32","rgba(50,255,50,.5)",1,1);
-    invincible=true;
-    setTimeout(()=>invincible=false,5000);
-  }
-}
-
-function setChar(color,trailC,jump,bslow){
-  player.style.background=color;
-  document.documentElement.style.setProperty("--glow",color);
-  document.documentElement.style.setProperty("--trail",trailC);
-  jumpBoost=jump;bossSlow=bslow;
-}
-
-function startGame(){
-  if(!character) return alert("Choose a character!");
-  document.getElementById("start").style.display="none";
-  running=true;
-  loop();
-}
-
-document.addEventListener("keydown",e=>{
-  if(!running) return;
-  if(e.key==="ArrowLeft"&&lane>1){lane--;updateLane();}
-  if(e.key==="ArrowRight"&&lane<3){lane++;updateLane();}
-  if((e.key==="ArrowUp"||e.key===" ")&&!jumping) jump();
-});
-document.addEventListener("touchstart",()=>!jumping&&jump());
-
-function updateLane(){
-  player.style.left=["38%","50%","62%"][lane-1];
-}
-
-function jump(){
-  jumping=true;
-  let h=0,max=150*jumpBoost;
-  let up=setInterval(()=>{
-    h+=12;player.style.bottom=120+h+"px";
-    if(h>=max){
-      clearInterval(up);
-      let down=setInterval(()=>{
-        h-=12;player.style.bottom=120+h+"px";
-        if(h<=0){clearInterval(down);jumping=false;}
-      },20);
-    }
-  },20);
-}
-
-function gameOver(){
-  running=false;
-  document.getElementById("over").style.display="flex";
-  document.getElementById("finalScore").innerText="Score: "+score;
-}
-
-function loop(){
-  setInterval(()=>{
-    if(!running) return;
-
-    score++;
-    speed+=0.02;
-    chase-=0.4*bossSlow;
-
-    document.getElementById("score").innerText=score;
-    document.getElementById("spd").innerText=speed.toFixed(1);
-
-    boss.style.bottom=(-220+(420-chase))+"px";
-    trail.style.left=player.style.left;
-    trail.style.bottom="110px";
-
-    speedLines.style.opacity=Math.min((speed-10)/10,.6);
-    scene.style.transform=`scale(${1+speed/120})`;
-
-    if(chase<80) scene.style.transform+=` rotate(${Math.sin(score)*.4}deg)`;
-
-    if(chase<=0 && !invincible) gameOver();
-  },50);
-}
-</script>
-
+<script src="/script.js"></script>
 </body>
 </html>
