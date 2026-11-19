@@ -90,6 +90,46 @@ DEFAULT_PROJECTS = [
     },
 ]
 
+# Paste an image URL (or /images/name.jpg) into each slot.
+# main  = picture on the project list card (home page)
+# func / use / model = pictures in the detail page sections
+# Leave "" to show the project's symbol instead.
+PROJECT_IMAGES = {
+    "piezoelectric-sensor": {"main": "", "func": "", "use": "", "model": ""},
+    "cookie-lady":          {"main": "", "func": "", "use": "", "model": ""},
+    "maglev-train":         {"main": "", "func": "", "use": "", "model": ""},
+    "radar-system":         {"main": "", "func": "", "use": "", "model": ""},
+}
+
+PART_BY_HEADING = {
+    "how it works": "func",
+    "where it is used": "use",
+    "our model": "model",
+    "about this project": "func",   # Cookie Lady's single section
+}
+
+
+def with_images(projects):
+    out = []
+    for p in projects:
+        p = dict(p)
+        imgs = PROJECT_IMAGES.get(p.get("slug"), {})
+
+        # Main picture for the list card. Dict wins, then any MongoDB value, else "" (symbol).
+        main = (imgs.get("main") or "").strip()
+        p["image"] = main or (p.get("image") or "").strip()
+
+        details = []
+        for d in p.get("details", []):
+            d = dict(d)
+            part = PART_BY_HEADING.get(str(d.get("heading", "")).strip().lower())
+            d["image"] = (imgs.get(part) or "").strip() if part else ""
+            details.append(d)
+        p["details"] = details
+        out.append(p)
+    return out
+
+
 app = Flask(__name__, static_folder=None)
 
 _collection = None
@@ -130,9 +170,14 @@ def script():
     return send_from_directory(BASE_DIR, "script.js")
 
 
+@app.route("/images/<path:filename>")
+def images(filename):
+    return send_from_directory(os.path.join(BASE_DIR, "images"), filename)
+
+
 @app.route("/api/projects")
 def api_projects():
-    response = jsonify({"site": SITE, "projects": load_projects()})
+    response = jsonify({"site": SITE, "projects": with_images(load_projects())})
     response.headers["Cache-Control"] = "no-store"
     return response
 
